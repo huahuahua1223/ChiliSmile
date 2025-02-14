@@ -635,23 +635,106 @@ body {
   min-width: 60px;
 }
 
-/* 钱包连接按钮样式 */
-/* .wallet-connect {
+/* 钱包按钮和下拉菜单样式 */
+.wallet-button {
+  padding: 6px 16px;
+  height: 36px;
+  line-height: 24px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
   margin-left: 16px;
 }
 
-.wallet-connect button {
-  background: #1890ff;
-  border: none;
-  border-radius: 4px;
-  color: white;
-  padding: 4px 15px;
-  height: 32px;
+.wallet-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+}
+
+.wallet-dropdown .ant-dropdown-menu {
+  padding: 4px;
+  background: #001529;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.wallet-address {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   cursor: pointer;
-  font-size: 14px;
+  padding: 8px 12px;
+  color: rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
   transition: all 0.3s;
 }
 
-.wallet-connect button:hover {
-  background: #40a9ff;
-} */
+.wallet-address:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.wallet-address:hover .anticon {
+  color: #1890ff;
+}
+
+.ant-dropdown-menu-item {
+  padding: 8px 12px !important;
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.ant-dropdown-menu-item:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+.ant-dropdown-menu-item-danger {
+  color: #ff7875 !important;
+}
+
+.ant-dropdown-menu-item-danger:hover {
+  background: rgba(255, 77, 79, 0.16) !important;
+}
+
+.ant-dropdown-menu-item-divider {
+  background-color: rgba(255, 255, 255, 0.1);
+  margin: 4px 0 !important;
+}
+
+/* 个人中心样式 */
+.user-profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.profile-card {
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+}
+
+.profile-header {
+  margin-bottom: 32px;
+  padding: 24px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.artwork-stats {
+  margin-top: 8px;
+  display: flex;
+  gap: 16px;
+  color: #666;
+}
+
+.artwork-stats .anticon {
+  margin-right: 4px;
+}

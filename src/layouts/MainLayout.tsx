@@ -1,8 +1,8 @@
-import { Layout, Menu } from 'antd';
-import { Link, useLocation } from 'react-router-dom';
-import { AppstoreOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { Layout, Menu, Dropdown, message } from 'antd';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AppstoreOutlined, PlusCircleOutlined, LogoutOutlined, CopyOutlined, UserOutlined } from '@ant-design/icons';
 import { menuItems } from '../routes';
-import { ConnectButton } from '@mysten/dapp-kit';
+import { ConnectButton, useCurrentAccount, useDisconnectWallet } from '@mysten/dapp-kit';
 
 const { Header, Content, Footer } = Layout;
 
@@ -13,6 +13,9 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const currentAccount = useCurrentAccount();
+  const { mutate: disconnect } = useDisconnectWallet();
   
   const menuConfig = menuItems.map(item => ({
     key: item.key,
@@ -21,6 +24,43 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   }));
 
   const currentKey = menuItems.find(item => item.path === location.pathname)?.key || '1';
+
+  // 复制地址到剪贴板
+  const copyAddress = () => {
+    if (currentAccount?.address) {
+      navigator.clipboard.writeText(currentAccount.address);
+      message.success('地址已复制到剪贴板');
+    }
+  };
+
+  // 钱包下拉菜单
+  const walletItems = [
+    {
+      key: 'address',
+      label: (
+        <div className="wallet-address" onClick={copyAddress}>
+          <span>{currentAccount?.address?.slice(0, 6)}...{currentAccount?.address?.slice(-4)}</span>
+          <CopyOutlined style={{ marginLeft: 8 }} />
+        </div>
+      ),
+    },
+    {
+      type: 'divider',
+    },
+    {
+      key: 'profile',
+      icon: <UserOutlined />,
+      label: '个人中心',
+      onClick: () => navigate('/profile'),
+    },
+    {
+      key: 'disconnect',
+      danger: true,
+      icon: <LogoutOutlined />,
+      label: '断开连接',
+      onClick: () => disconnect(),
+    },
+  ];
 
   return (
     <Layout style={{ minHeight: '100vh', background: '#fff' }}>
@@ -36,7 +76,20 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             items={menuConfig}
             className="nav-menu"
           />
-          <ConnectButton />
+          {currentAccount ? (
+            <Dropdown
+              menu={{ items: walletItems }}
+              placement="bottomRight"
+              trigger={['click']}
+              overlayClassName="wallet-dropdown"
+            >
+              <div className="wallet-button">
+                {currentAccount.address.slice(0, 6)}...{currentAccount.address.slice(-4)}
+              </div>
+            </Dropdown>
+          ) : (
+            <ConnectButton />
+          )}
         </div>
       </Header>
       

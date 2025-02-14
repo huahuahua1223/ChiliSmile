@@ -2,6 +2,7 @@ import { RouteObject } from 'react-router-dom';
 import ArtworkList from '../components/ArtworkList';
 import CreateArtwork from '../components/CreateArtwork';
 import ArtworkDetail from '../components/ArtworkDetail';
+import UserProfile from '../components/UserProfile';
 
 export const routes: RouteObject[] = [
   {
@@ -15,6 +16,10 @@ export const routes: RouteObject[] = [
   {
     path: '/artwork/:id',
     element: <ArtworkDetail />,
+  },
+  {
+    path: '/profile',
+    element: <UserProfile />,
   },
 ];
 
