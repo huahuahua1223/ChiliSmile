@@ -2,6 +2,7 @@ import { Layout, Menu } from 'antd';
 import { Link, useLocation } from 'react-router-dom';
 import { AppstoreOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import { menuItems } from '../routes';
+import { ConnectButton } from '@mysten/dapp-kit';
 
 const { Header, Content, Footer } = Layout;
 
@@ -35,6 +36,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             items={menuConfig}
             className="nav-menu"
           />
+          <ConnectButton />
         </div>
       </Header>
       

@@ -362,14 +362,17 @@ body {
   top: 0;
   z-index: 1000;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  height: 80px;
+  line-height: 64px;
 }
 
 .header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
-  display: flex;
-  align-items: center;
   height: 100%;
 }
 
@@ -383,6 +386,8 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: 0.5px;
+  height: 64px;
+  line-height: 64px;
 }
 
 .logo:hover {
@@ -391,18 +396,24 @@ body {
 
 .nav-menu {
   flex: 1;
-  background: transparent;
-  border-bottom: none;
+  background: transparent !important;
+  border-bottom: none !important;
+  min-width: 0;
+  height: 64px;
+  line-height: 64px;
 }
 
 .nav-menu .ant-menu-item {
   padding: 0 24px;
-  margin: 0 4px;
+  margin: 0 4px !important;
   font-size: 15px;
+  line-height: 64px !important;
+  height: 64px !important;
 }
 
 .nav-menu .ant-menu-item:hover {
   background: rgba(255, 255, 255, 0.1);
+  color: white !important;
 }
 
 .nav-menu .ant-menu-item-selected {
@@ -410,7 +421,7 @@ body {
 }
 
 .nav-menu .ant-menu-item::after {
-  display: none;
+  display: none !important;
 }
 
 .nav-menu .ant-menu-item a {
@@ -418,12 +429,61 @@ body {
 }
 
 .nav-menu .ant-menu-item-selected a {
-  color: #fff;
+  color: #fff !important;
 }
 
 .nav-menu .anticon {
   margin-right: 8px;
   font-size: 16px;
+}
+
+/* Connect Button 样式 */
+.header-content :global(.sui-connect-button) {
+  margin-left: 16px;
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  top: 0;
+}
+
+.header-content :global(.sui-connect-button:hover) {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.header-content :global(.sui-connect-button:active) {
+  transform: translateY(0);
+}
+
+/* 钱包图标样式 */
+.header-content :global(.sui-connect-button svg) {
+  width: 16px;
+  height: 16px;
+  opacity: 0.9;
+  position: relative;
+  top: -1px;
+}
+
+/* 连接状态样式 */
+.header-content :global(.sui-connect-button.connected) {
+  background: rgba(24, 144, 255, 0.2);
+  border-color: rgba(24, 144, 255, 0.3);
+}
+
+.header-content :global(.sui-connect-button.connected:hover) {
+  background: rgba(24, 144, 255, 0.3);
+  border-color: rgba(24, 144, 255, 0.4);
 }
 
 /* 响应式调整 */
@@ -439,7 +499,7 @@ body {
   
   .nav-menu .ant-menu-item {
     padding: 0 16px;
-    margin: 0 2px;
+    margin: 0 2px !important;
   }
 }
 
@@ -574,3 +634,24 @@ body {
 .ant-switch {
   min-width: 60px;
 }
+
+/* 钱包连接按钮样式 */
+/* .wallet-connect {
+  margin-left: 16px;
+}
+
+.wallet-connect button {
+  background: #1890ff;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  padding: 4px 15px;
+  height: 32px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.wallet-connect button:hover {
+  background: #40a9ff;
+} */
