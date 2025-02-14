@@ -6,6 +6,7 @@ export interface Artwork {
   model: 'LITERATURE' | 'VIDEO' | 'PAINTING' | 'EMOJI';
   owner: string;
   likes: number;
+  isLiked: boolean;
   visibility: boolean;
   coverUrl?: string;  // 可选的封面图片
   createdAt?: string; // 创建时间
@@ -32,6 +33,7 @@ const generateMockData = (count: number): Artwork[] => {
       model: model,
       owner: `0x${Math.random().toString(16).slice(2, 8)}`,
       likes: Math.floor(Math.random() * 200) + 1,
+      isLiked: false,
       visibility: true,
       createdAt: date.toISOString().split('T')[0]
     };
@@ -51,6 +53,7 @@ mockArtworks.unshift(
     model: 'LITERATURE',
     owner: '0x789abc',
     likes: 156,
+    isLiked: false,
     visibility: true,
     createdAt: '2024-03-01'
   },
@@ -62,6 +65,7 @@ mockArtworks.unshift(
     model: 'PAINTING',
     owner: '0x101def',
     likes: 238,
+    isLiked: false,
     visibility: true,
     createdAt: '2024-03-02'
   },
@@ -73,6 +77,7 @@ mockArtworks.unshift(
     model: 'EMOJI',
     owner: '0x456def',
     likes: 342,
+    isLiked: false,
     visibility: true,
     createdAt: '2024-03-03'
   }

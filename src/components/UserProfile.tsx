@@ -61,10 +61,10 @@ const UserProfile = () => {
                           className="artwork-card"
                         >
                           <Card.Meta
-                            title={item.title}
+                            title={item.name}
                             description={
                               <>
-                                <Tag color="blue">{item.type}</Tag>
+                                <Tag color="blue">{item.model}</Tag>
                                 <div className="artwork-stats">
                                   <span><HeartOutlined /> {item.likes}</span>
                                   <span><DollarOutlined /> {(item.likes * 0.1).toFixed(2)} SUI</span>
@@ -95,10 +95,10 @@ const UserProfile = () => {
                           className="artwork-card"
                         >
                           <Card.Meta
-                            title={item.title}
+                            title={item.name}
                             description={
                               <>
-                                <Tag color="blue">{item.type}</Tag>
+                                <Tag color="blue">{item.model}</Tag>
                                 <Text type="secondary">支付了 {0.1} SUI</Text>
                               </>
                             }

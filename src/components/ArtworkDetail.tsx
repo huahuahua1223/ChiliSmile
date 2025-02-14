@@ -17,7 +17,7 @@ const ArtworkDetail = () => {
   
   const artwork = mockArtworks.find(item => item.id === id);
   const [likes, setLikes] = useState(artwork?.likes || 0);
-  const [isPublic, setIsPublic] = useState(artwork?.visibility || true);
+  const [isPublic, setIsPublic] = useState<boolean>(artwork?.visibility || true);
 
   if (!artwork) {
     return <div>作品不存在</div>;
@@ -35,7 +35,7 @@ const ArtworkDetail = () => {
   };
 
   const handleVisibilityChange = (checked: boolean) => {
-    setIsPublic(checked);
+    setIsPublic(() => checked);
     message.success(`作品已设为${checked ? '公开' : '私密'}`);
   };
 

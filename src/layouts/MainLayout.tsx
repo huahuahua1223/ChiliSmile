@@ -45,7 +45,8 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       ),
     },
     {
-      type: 'divider',
+      key: 'divider',
+      type: 'divider' as const,
     },
     {
       key: 'profile',
