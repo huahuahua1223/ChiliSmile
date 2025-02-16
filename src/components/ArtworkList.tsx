@@ -1,7 +1,8 @@
 import { Card, Row, Col, Typography, Space, Tag, Input, Spin, BackTop } from 'antd';
 import { HeartOutlined, EyeOutlined, SearchOutlined, VerticalAlignTopOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
-import { mockArtworks } from '../mock/artworks';
+import { Artwork } from '../lib/constants';
+import { queryState,queryObjs } from '../lib/common';
 import { useState, useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -26,22 +27,52 @@ const getModelIcon = (model: string) => {
 
 const ArtworkList = () => {
   const [searchText, setSearchText] = useState('');
-  const [displayArtworks, setDisplayArtworks] = useState<typeof mockArtworks>([]);
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [filteredArtworks, setFilteredArtworks] = useState<Artwork[]>([]);
+  const [displayArtworks, setDisplayArtworks] = useState<Artwork[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
-
+  
   // 根据搜索词过滤作品
-  const filteredArtworks = mockArtworks.filter(artwork =>
-    artwork.name.toLowerCase().includes(searchText.toLowerCase()) ||
-    artwork.desc.toLowerCase().includes(searchText.toLowerCase())
-  );
+  const filter = ()=>{
+    console.log('filter------------',artworks);
+    const filteredArtworks = artworks.filter(artwork =>
+      artwork.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      artwork.desc.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredArtworks(filteredArtworks);
+  }
+
+  useEffect(() => {
+    console.log('useEffect []');
+    fetchArtworks();
+  }, []);
 
   // 初始化和搜索时重置列表
   useEffect(() => {
+    if(filteredArtworks.length > 0){
+      setDisplayArtworks(filteredArtworks.slice(0, PAGE_SIZE));
+      setPage(1);
+      setHasMore(filteredArtworks.length > PAGE_SIZE);
+    }
+     }, [searchText]);
+
+  const fetchArtworks = async () => {
+     const atAddress = await queryState();
+     console.log('fetchArtworks--atAddress---',atAddress);
+     const artworks  =  await  queryObjs<Artwork>(atAddress);
+     console.log('artworks list-----> :Promise<T[]>',artworks);
+     setArtworks(artworks);
+     const filteredArtworks = artworks.filter(artwork =>
+      artwork.name.toLowerCase().includes(searchText.toLowerCase()) ||
+      artwork.desc.toLowerCase().includes(searchText.toLowerCase())
+    );
+    setFilteredArtworks(filteredArtworks);
     setDisplayArtworks(filteredArtworks.slice(0, PAGE_SIZE));
     setPage(1);
     setHasMore(filteredArtworks.length > PAGE_SIZE);
-  }, [searchText]);
+  };
+  
 
   // 加载更多数据
   const loadMore = () => {
@@ -85,16 +116,16 @@ const ArtworkList = () => {
       >
         <Row gutter={[16, 16]}>
           {displayArtworks.map(artwork => (
-            <Col xs={24} sm={12} md={8} lg={6} key={artwork.id}>
-              <Link to={`/artwork/${artwork.id}`}>
+            <Col xs={24} sm={12} md={8} lg={6} key={artwork.id.id}>
+              <Link to={`/artwork/${artwork.id.id}`}>
                 <Card
                   hoverable
                   className="artwork-card"
                   cover={
                     <div className="artwork-cover">
                       <div className="artwork-type">
-                        <span className="model-icon">{getModelIcon(artwork.model)}</span>
-                        <span className="model-text">{artwork.model}</span>
+                        <span className="model-icon">{getModelIcon(artwork.model.variant)}</span>
+                        <span className="model-text">{artwork.model.variant}</span>
                       </div>
                     </div>
                   }
@@ -112,7 +143,7 @@ const ArtworkList = () => {
                       <div className="card-description">
                         <div>{artwork.desc}</div>
                         <div className="card-footer">
-                          {artwork.createdAt}
+                          {artwork.create_time}
                         </div>
                       </div>
                     }

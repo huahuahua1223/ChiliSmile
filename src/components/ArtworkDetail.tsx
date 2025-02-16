@@ -1,37 +1,76 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Typography, Tag, Space, Button, message, Avatar, Divider, Modal, Switch, Input, Form } from 'antd';
 import { HeartOutlined, HeartFilled, UserOutlined, ArrowLeftOutlined, ClockCircleOutlined, SettingOutlined, SwapOutlined, EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import { useState } from 'react';
-import { mockArtworks } from '../mock/artworks';
+import { useState,useContext,useEffect } from 'react';
+import { useSignAndExecuteTransaction } from "@mysten/dapp-kit";
+import { Context} from '../layouts/MainLayout';
+import { Artwork } from '../lib/constants';
+import { unLikeArtwork,likeArtwork ,queryState,queryObjs} from '../lib/common';
 import { motion } from 'framer-motion';
 
 const { Title, Paragraph } = Typography;
 
 const ArtworkDetail = () => {
+
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
   const { id } = useParams();
   const navigate = useNavigate();
-  const [isLiked, setIsLiked] = useState(false);
+  const {userLikes, profile} = useContext(Context);
+  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [artwork, setArtwork] = useState<Artwork>();
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [isTransferModalVisible, setIsTransferModalVisible] = useState(false);
   const [newOwnerAddress, setNewOwnerAddress] = useState('');
-  
-  const artwork = mockArtworks.find(item => item.id === id);
-  const [likes, setLikes] = useState(artwork?.likes || 0);
-  const [isPublic, setIsPublic] = useState<boolean>(artwork?.visibility || true);
+  const [isLiked, setIsLiked] = useState(artwork? userLikes.likeBalance.has(artwork.id.id) :false);
+  const [isPublic, setIsPublic] = useState<boolean>(artwork?.show || true);
 
+  useEffect(() => {
+    fetchArtworks();
+  }, []);
+
+
+  const fetchArtworks = async () => {
+      const atAddress = await queryState();
+      const artworks  =  await  queryObjs<Artwork>(atAddress);
+      console.log('artworks list-----> :Promise<T[]>',artworks);
+      setArtworks(artworks);
+      setArtwork(()=> artworks.find(item => item.id.id === id));
+  };
+      
+  
   if (!artwork) {
     return <div>作品不存在</div>;
   }
 
-  const handleLike = () => {
+  const handleLike = async  (artwork: Artwork) => {
+    let at_address = artwork.id.id;
+    let tx;
     if (isLiked) {
-      setLikes(prev => prev - 1);
-      message.success('已取消点赞');
+       tx = await unLikeArtwork(at_address, profile.id.id);
+     
     } else {
-      setLikes(prev => prev + 1);
-      message.success('点赞成功');
+       tx = await likeArtwork(at_address, profile.id.id);
     }
-    setIsLiked(!isLiked);
+    signAndExecute(
+      { transaction: tx },
+      {
+        onSuccess: () => {
+          if (isLiked) {
+            artwork.likes = (parseInt(artwork.likes) -1)+'';
+            message.success('已取消点赞');
+            userLikes.likeBalance.delete(at_address);
+          }else{
+            artwork.likes = (parseInt(artwork.likes) +1)+'';
+            message.success('点赞成功');
+            userLikes.likeBalance.set(at_address, 10000000);
+          }
+          setIsLiked(!isLiked);
+        },
+        onError: (error) => {
+          console.log(error);
+        },
+      },
+    );
   };
 
   const handleVisibilityChange = (checked: boolean) => {
@@ -92,12 +131,12 @@ const ArtworkDetail = () => {
                 <span className="owner-name">{artwork.owner}</span>
               </Space>
               <Tag color="blue" className="model-tag-large">
-                {artwork.model}
+                {artwork.model.variant}
               </Tag>
-              {artwork.createdAt && (
+              {artwork.create_time && (
                 <Space>
                   <ClockCircleOutlined />
-                  <span className="creation-time">{artwork.createdAt}</span>
+                  <span className="creation-time">{artwork.create_time}</span>
                 </Space>
               )}
             </Space>
@@ -117,13 +156,13 @@ const ArtworkDetail = () => {
 
           <div className="artwork-actions">
             <Button 
-              type={isLiked ? "primary" : "default"}
-              icon={isLiked ? <HeartFilled /> : <HeartOutlined />}
-              onClick={handleLike}
+              type={userLikes.likeBalance.has(artwork.id.id) ? "primary" : "default"}
+              icon={userLikes.likeBalance.has(artwork.id.id) ? <HeartFilled /> : <HeartOutlined />}
+              onClick={()=>  handleLike(artwork)}
               className="like-button"
               size="large"
             >
-              {likes} 赞
+              {artwork.likes} 赞
             </Button>
           </div>
         </motion.div>

@@ -1,8 +1,13 @@
 import { Form, Input, Select, Button, Typography, message, Card, Space } from 'antd';
-import { useState } from 'react';
+import { useState ,useContext} from 'react';
+import { Context} from '../layouts/MainLayout';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { modelMap,SaveArtwork } from '../lib/constants';
+import { createArtworkTx } from '../lib/artworks';
 import { SendOutlined, LoadingOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { useCurrentAccount,useSignAndExecuteTransaction } from '@mysten/dapp-kit';
+
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -11,15 +16,31 @@ const CreateArtwork = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-
-  const onFinish = (values: any) => {
-    setLoading(true);
-    // 模拟提交
-    setTimeout(() => {
-      message.success('作品发布成功！');
-      setLoading(false);
-      navigate('/');
-    }, 1000);
+  const currentAccount = useCurrentAccount();
+  const { mutate: signAndExecute } = useSignAndExecuteTransaction();
+  const {profile} = useContext(Context);
+   
+  const onFinish = async (artwork: SaveArtwork) => {
+    console.log('profile.id.id-----',profile.id.id)
+    if(currentAccount && profile.id.id){
+      setLoading(true);
+      const tx = await createArtworkTx(artwork.name, artwork.desc, artwork.content, artwork.model, profile.id.id);
+      signAndExecute(
+        {
+          transaction: tx,
+        },
+        {
+          onSuccess: () => {
+            setLoading(false);
+            navigate('/');
+            console.log("Artwork created");
+          },
+          onError: (error) => {
+            console.log(error);
+          },
+        },
+      );
+    }
   };
 
   return (
@@ -91,10 +112,10 @@ const CreateArtwork = () => {
               rules={[{ required: true, message: '请选择作品类型' }]}
             >
               <Select size="large">
-                <Select.Option value="LITERATURE">文学</Select.Option>
-                <Select.Option value="VIDEO">视频</Select.Option>
-                <Select.Option value="PAINTING">绘画</Select.Option>
-                <Select.Option value="EMOJI">表情包</Select.Option>
+                <Select.Option value={modelMap.get("LITERATURE")} >文学</Select.Option>
+                <Select.Option value={modelMap.get( "VIDEO")}>视频</Select.Option>
+                <Select.Option value={modelMap.get("PAINTING")}>绘画</Select.Option>
+                <Select.Option value={modelMap.get("EMOJI")}>表情包</Select.Option>
               </Select>
             </Form.Item>
 
