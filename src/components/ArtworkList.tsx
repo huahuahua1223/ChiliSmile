@@ -1,4 +1,4 @@
-import { Card, Row, Col, Typography, Space, Tag, Input, Spin, BackTop } from 'antd';
+import { Card, Row, Col, Typography, Space, Input, Spin, BackTop } from 'antd';
 import { HeartOutlined, EyeOutlined, SearchOutlined, VerticalAlignTopOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import { Artwork } from '../lib/constants';
@@ -27,65 +27,59 @@ const getModelIcon = (model: string) => {
 
 const ArtworkList = () => {
   const [searchText, setSearchText] = useState('');
-  const [artworks, setArtworks] = useState<Artwork[]>([]);
-  const [filteredArtworks, setFilteredArtworks] = useState<Artwork[]>([]);
-  const [displayArtworks, setDisplayArtworks] = useState<Artwork[]>([]);
+  const [artworks, setArtworks] = useState<Artwork[]>([]); // 所有作品的原始数据
+  const [displayArtworks, setDisplayArtworks] = useState<Artwork[]>([]); // 当前显示的作品（分页后）
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(1);
-  
-  // 根据搜索词过滤作品
-  const filter = ()=>{
-    console.log('filter------------',artworks);
-    const filteredArtworks = artworks.filter(artwork =>
+
+  // 提取过滤逻辑为独立函数
+  const filterArtworks = (artworks: Artwork[], searchText: string) => {
+    return artworks.filter(artwork =>
       artwork.name.toLowerCase().includes(searchText.toLowerCase()) ||
       artwork.desc.toLowerCase().includes(searchText.toLowerCase())
     );
-    setFilteredArtworks(filteredArtworks);
-  }
+  };
+
+  // 更新显示作品的函数
+  const updateDisplayArtworks = (filtered: Artwork[], currentPage: number = 1) => {
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    
+    if (currentPage === 1) {
+      setDisplayArtworks(filtered.slice(0, PAGE_SIZE));
+    } else {
+      setDisplayArtworks(prev => [...prev, ...filtered.slice(start, end)]);
+    }
+    
+    setPage(currentPage);
+    setHasMore(end < filtered.length);
+  };
 
   useEffect(() => {
-    console.log('useEffect []');
     fetchArtworks();
   }, []);
 
-  // 初始化和搜索时重置列表
+  // 当搜索文本改变时，过滤作品
   useEffect(() => {
-    if(filteredArtworks.length > 0){
-      setDisplayArtworks(filteredArtworks.slice(0, PAGE_SIZE));
-      setPage(1);
-      setHasMore(filteredArtworks.length > PAGE_SIZE);
+    if (artworks.length > 0) {
+      const filtered = filterArtworks(artworks, searchText);
+      updateDisplayArtworks(filtered);
     }
-     }, [searchText]);
+  }, [searchText, artworks]);
 
   const fetchArtworks = async () => {
-     const atAddress = await queryState();
-     console.log('fetchArtworks--atAddress---',atAddress);
-     const artworks  =  await  queryObjs<Artwork>(atAddress);
-     console.log('artworks list-----> :Promise<T[]>',artworks);
-     setArtworks(artworks);
-     const filteredArtworks = artworks.filter(artwork =>
-      artwork.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      artwork.desc.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setFilteredArtworks(filteredArtworks);
-    setDisplayArtworks(filteredArtworks.slice(0, PAGE_SIZE));
-    setPage(1);
-    setHasMore(filteredArtworks.length > PAGE_SIZE);
+    const atAddress = await queryState();
+    const fetchedArtworks = await queryObjs<Artwork>(atAddress);
+    setArtworks(fetchedArtworks);
+    updateDisplayArtworks(fetchedArtworks);
   };
-  
 
-  // 加载更多数据
   const loadMore = () => {
     const nextPage = page + 1;
-    const start = (nextPage - 1) * PAGE_SIZE;
-    const end = start + PAGE_SIZE;
-    
     setTimeout(() => {
-      const newArtworks = filteredArtworks.slice(start, end);
-      setDisplayArtworks(prev => [...prev, ...newArtworks]);
-      setPage(nextPage);
-      setHasMore(end < filteredArtworks.length);
-    }, 500); // 添加延迟模拟加载
+      const filtered = filterArtworks(artworks, searchText);
+      updateDisplayArtworks(filtered, nextPage);
+    }, 500);
   };
 
   return (
@@ -95,7 +89,9 @@ const ArtworkList = () => {
         <Input
           prefix={<SearchOutlined />}
           placeholder="搜索作品..."
+          value={searchText}
           onChange={e => setSearchText(e.target.value)}
+          allowClear
         />
       </div>
 
