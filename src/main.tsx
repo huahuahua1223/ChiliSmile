@@ -2,9 +2,9 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
-import { createNetworkConfig, SuiClientProvider, WalletProvider, ThemeVars } from '@mysten/dapp-kit'
-import { getFullnodeUrl } from '@mysten/sui/client'
+import { SuiClientProvider, WalletProvider, ThemeVars } from '@mysten/dapp-kit'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { networkConfig } from "./config/networkConfig";
 // 导入 dapp-kit 样式
 import '@mysten/dapp-kit/dist/index.css'
 
@@ -70,17 +70,10 @@ const darkTheme: ThemeVars = {
   },
 };
 
-// 网络配置
-const { networkConfig } = createNetworkConfig({
-	mainnet: { url: getFullnodeUrl('mainnet') },
-  testnet: { url: getFullnodeUrl('testnet') },
-  devnet: { url: getFullnodeUrl('devnet') },
-});
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <SuiClientProvider networks={networkConfig} defaultNetwork="devnet">
+      <SuiClientProvider networks={networkConfig} defaultNetwork="testnet">
         <WalletProvider
           autoConnect
           preferredWallets={['sui-wallet', 'ethos', 'suiet']}
