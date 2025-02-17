@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
-    "@mysten/dapp-kit": "^0.14.50",
-    "@mysten/sui": "^1.21.2",
+    "@mysten/dapp-kit": "^0.14.49",
+    "@mysten/sui": "^1.21.1",
     "@tanstack/react-query": "^5.66.0",
     "antd": "^5.24.0",
     "framer-motion": "^12.4.2",
