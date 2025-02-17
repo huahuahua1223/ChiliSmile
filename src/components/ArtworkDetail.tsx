@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { Card, Typography, Tag, Space, Button, message, Avatar, Divider, Modal, Switch, Input, Form } from 'antd';
+import { Card, Typography, Tag, Space, Button, message, Avatar, Divider, Modal, Switch, Input, Form, Spin } from 'antd';
 import { HeartOutlined, HeartFilled, UserOutlined, ArrowLeftOutlined, ClockCircleOutlined, SettingOutlined, SwapOutlined, EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { useState,useContext,useEffect } from 'react';
 import { useSignAndExecuteTransaction } from "@mysten/dapp-kit";
@@ -39,7 +39,16 @@ const ArtworkDetail = () => {
       
   
   if (!artwork) {
-    return <div>作品不存在</div>;
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '200px' 
+      }}>
+        <Spin tip="加载中..." size="large" />
+      </div>
+    );
   }
 
   const handleLike = async  (artwork: Artwork) => {
