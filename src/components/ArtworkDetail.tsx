@@ -21,13 +21,18 @@ const ArtworkDetail = () => {
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [isTransferModalVisible, setIsTransferModalVisible] = useState(false);
   const [newOwnerAddress, setNewOwnerAddress] = useState('');
-  const [isLiked, setIsLiked] = useState(artwork? userLikes.likeBalance.has(artwork.id.id) :false);
+  const [isLiked, setIsLiked] = useState(false);
   const [isPublic, setIsPublic] = useState<boolean>(artwork?.show || true);
 
   useEffect(() => {
     fetchArtworks();
   }, []);
 
+  useEffect(() => {
+    if (artwork && userLikes) {
+      setIsLiked(userLikes.likeBalance.has(artwork.id.id));
+    }
+  }, [artwork, userLikes]);
 
   const fetchArtworks = async () => {
       const atAddress = await queryState();
@@ -51,35 +56,46 @@ const ArtworkDetail = () => {
     );
   }
 
-  const handleLike = async  (artwork: Artwork) => {
+  const handleLike = async (artwork: Artwork) => {
     let at_address = artwork.id.id;
     let tx;
-    if (isLiked) {
-       tx = await unLikeArtwork(at_address, profile.id.id);
-     
-    } else {
-       tx = await likeArtwork(at_address, profile.id.id);
+    try {
+      const hasLiked = userLikes.likeBalance.has(at_address);
+      console.log('当前点赞状态:', hasLiked);
+
+      if (hasLiked) {
+        console.log('准备取消点赞');
+        tx = await unLikeArtwork(at_address, profile.id.id);
+      } else {
+        console.log('准备点赞');
+        tx = await likeArtwork(at_address, profile.id.id);
+      }
+
+      signAndExecute(
+        { transaction: tx },
+        {
+          onSuccess: () => {
+            if (hasLiked) {
+              artwork.likes = (parseInt(artwork.likes) - 1) + '';
+              message.success('已取消点赞');
+              userLikes.likeBalance.delete(at_address);
+            } else {
+              artwork.likes = (parseInt(artwork.likes) + 1) + '';
+              message.success('点赞成功');
+              userLikes.likeBalance.set(at_address, 10000000);
+            }
+            setIsLiked(!hasLiked);
+          },
+          onError: (error) => {
+            console.error('交易失败:', error);
+            message.error('操作失败，请重试');
+          },
+        },
+      );
+    } catch (error) {
+      console.error('处理点赞失败:', error);
+      message.error('操作失败，请重试');
     }
-    signAndExecute(
-      { transaction: tx },
-      {
-        onSuccess: () => {
-          if (isLiked) {
-            artwork.likes = (parseInt(artwork.likes) -1)+'';
-            message.success('已取消点赞');
-            userLikes.likeBalance.delete(at_address);
-          }else{
-            artwork.likes = (parseInt(artwork.likes) +1)+'';
-            message.success('点赞成功');
-            userLikes.likeBalance.set(at_address, 10000000);
-          }
-          setIsLiked(!isLiked);
-        },
-        onError: (error) => {
-          console.log(error);
-        },
-      },
-    );
   };
 
   const handleVisibilityChange = (checked: boolean) => {
