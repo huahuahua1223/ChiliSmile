@@ -2,10 +2,10 @@ import { Layout, Menu, Dropdown, message } from 'antd';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AppstoreOutlined, PlusCircleOutlined, LogoutOutlined, CopyOutlined, UserOutlined } from '@ant-design/icons';
 import { menuItems } from '../routes';
-import { ConnectButton, useCurrentAccount, useDisconnectWallet,useSignAndExecuteTransaction } from '@mysten/dapp-kit';
+import { ConnectButton, useCurrentAccount, useDisconnectWallet,useSignAndExecuteTransaction, useWallets } from '@mysten/dapp-kit';
 import { useState, useEffect,useCallback,createContext } from 'react';
-import { queryUser,createProfile,queryObj ,queryDynamicData} from '../lib/common';
-import { Profile,UserProfile,profileDefaultValue ,UserLikes,userLikesDefaultValue} from '../lib/constants';
+import { queryUser, createProfile, queryObj, queryDynamicData } from '../lib/common';
+import { Profile, UserProfile, profileDefaultValue, UserLikes, userLikesDefaultValue } from '../lib/constants';
 const { Header, Content, Footer } = Layout;
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -24,6 +24,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const navigate = useNavigate();
   const currentAccount = useCurrentAccount();
   const { mutate: disconnect } = useDisconnectWallet();
+  const wallets = useWallets();
 
   const [profile, setProfile] = useState<Profile>(profileDefaultValue);
   const [userLikes, setUserLikes] = useState<UserLikes>(userLikesDefaultValue);
@@ -97,11 +98,26 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // 钱包下拉菜单
   const walletItems = [
     {
-      key: 'address',
+      key: 'account-info',
       label: (
-        <div className="wallet-address" onClick={copyAddress}>
-          <span>{currentAccount?.address?.slice(0, 6)}...{currentAccount?.address?.slice(-4)}</span>
-          <CopyOutlined style={{ marginLeft: 8 }} />
+        <div className="wallet-account-info">
+          <div className="wallet-avatar">
+            {wallets.some(w => w.accounts[0]?.address === currentAccount?.address) && (
+              <img 
+                src={wallets.find(w => w.accounts[0]?.address === currentAccount?.address)?.icon} 
+                alt="Wallet Icon"
+              />
+            )}
+          </div>
+          <div className="wallet-details">
+            <div className="wallet-name">
+              {wallets.find(w => w.accounts[0]?.address === currentAccount?.address)?.name || 'Unknown Wallet'}
+            </div>
+            <div className="wallet-address" onClick={copyAddress}>
+              <span>{currentAccount?.address?.slice(0, 6)}...{currentAccount?.address?.slice(-4)}</span>
+              <CopyOutlined style={{ marginLeft: 8 }} />
+            </div>
+          </div>
         </div>
       ),
     },
@@ -126,9 +142,20 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <Layout style={{ minHeight: '100vh', background: '#fff' }}>
-      <Header className="header">
-        <div className="header-content">
+      <Header className="header" style={{ padding: 0 }}>
+        <div className="header-content" style={{
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '0 24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
           <Link to="/" className="logo">
+            <img 
+              src="/chilismile.png" 
+              alt="ChiliSmile Logo"
+            />
             ChiliSmile
           </Link>
           <Menu

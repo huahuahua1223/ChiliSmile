@@ -34,10 +34,34 @@ body {
 }
 
 .logo {
-  font-size: 20px;
+  display: flex;
+  align-items: center;
+  font-size: 24px;
   font-weight: bold;
-  color: white;
-  margin-right: 40px;
+  margin-right: 48px;
+  text-decoration: none;
+  background: linear-gradient(45deg, #594d3f 30%, #8b7355 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.5px;
+  height: 64px;
+  line-height: 64px;
+  transition: all 0.3s ease;
+}
+
+.logo img {
+  height: 32px;
+  margin-right: 12px;
+  vertical-align: middle;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  opacity: 0.9;
+}
+
+.logo:hover img {
+  transform: scale(1.05);
 }
 
 .ant-layout-content {
@@ -60,9 +84,13 @@ body {
 }
 
 .artwork-header h2 {
-  color: #333;
-  font-size: 28px;
+  font-size: 32px !important;
   margin-bottom: 24px;
+  background: linear-gradient(45deg, #594d3f, #8b7355);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  padding-bottom: 16px;
 }
 
 .artwork-header .ant-input-affix-wrapper {
@@ -74,7 +102,23 @@ body {
 
 .artwork-header .ant-input-affix-wrapper:hover,
 .artwork-header .ant-input-affix-wrapper:focus {
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  border-color: #8b7355;
+  box-shadow: 0 0 0 2px rgba(89, 77, 63, 0.1);
+}
+
+.artwork-header .ant-input-search .ant-input:hover,
+.artwork-header .ant-input-search .ant-input:focus {
+  border-color: #594d3f;
+}
+
+.artwork-header .ant-input-search .ant-input-search-button {
+  background: linear-gradient(45deg, #594d3f, #8b7355);
+  border-color: #594d3f;
+}
+
+.artwork-header .ant-input-search .ant-input-search-button:hover {
+  background: linear-gradient(45deg, #655847, #97805f);
+  border-color: #655847;
 }
 
 /* 卡片样式 */
@@ -254,7 +298,7 @@ body {
   text-align: center;
   margin-bottom: 32px;
   font-size: 28px;
-  background: linear-gradient(45deg, #1890ff, #36cfc9);
+  background: linear-gradient(45deg, #594d3f, #8b7355);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -356,14 +400,20 @@ body {
 
 /* 导航栏样式 */
 .header {
-  background: linear-gradient(90deg, #001529 0%, #003a70 100%) !important;
+  background: linear-gradient(90deg, 
+    #d2c8b9 0%, 
+    #e5dcd3 35%,
+    #d8cfc0 65%,
+    #cec4b5 100%
+  ) !important;
   padding: 0;
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(210, 200, 185, 0.25);
   height: 80px;
   line-height: 64px;
+  border-bottom: 1px solid rgba(89, 77, 63, 0.1);
 }
 
 .header-content {
@@ -374,24 +424,6 @@ body {
   margin: 0 auto;
   padding: 0 24px;
   height: 100%;
-}
-
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: white;
-  margin-right: 48px;
-  text-decoration: none;
-  background: linear-gradient(45deg, #fff 30%, #40a9ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  letter-spacing: 0.5px;
-  height: 64px;
-  line-height: 64px;
-}
-
-.logo:hover {
-  opacity: 0.9;
 }
 
 .nav-menu {
@@ -409,27 +441,56 @@ body {
   font-size: 15px;
   line-height: 64px !important;
   height: 64px !important;
+  color: #594d3f !important;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
+/* 添加悬停效果 */
 .nav-menu .ant-menu-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white !important;
+  background: linear-gradient(
+    180deg,
+    rgba(89, 77, 63, 0.05) 0%,
+    rgba(89, 77, 63, 0.1) 100%
+  ) !important;
+  color: #594d3f !important;
 }
 
+/* 选中状态样式 */
 .nav-menu .ant-menu-item-selected {
-  background: rgba(255, 255, 255, 0.2) !important;
+  background: linear-gradient(
+    180deg,
+    rgba(89, 77, 63, 0.08) 0%,
+    rgba(89, 77, 63, 0.15) 100%
+  ) !important;
+  font-weight: 500;
 }
 
+/* 添加底部边框效果 */
 .nav-menu .ant-menu-item::after {
-  display: none !important;
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: #594d3f;
+  transition: all 0.3s ease;
+  transform: translateX(-50%);
+}
+
+.nav-menu .ant-menu-item:hover::after,
+.nav-menu .ant-menu-item-selected::after {
+  width: 24px;
 }
 
 .nav-menu .ant-menu-item a {
-  color: rgba(255, 255, 255, 0.85);
+  color: #594d3f !important;
 }
 
 .nav-menu .ant-menu-item-selected a {
-  color: #fff !important;
+  color: #594d3f !important;
+  font-weight: 500;
 }
 
 .nav-menu .anticon {
@@ -443,9 +504,13 @@ body {
   height: 32px;
   padding: 0 16px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: white;
+  background: linear-gradient(
+    45deg,
+    rgba(89, 77, 63, 0.08) 0%,
+    rgba(89, 77, 63, 0.12) 100%
+  );
+  border: 1px solid rgba(89, 77, 63, 0.2);
+  color: #594d3f;
   font-size: 14px;
   transition: all 0.3s ease;
   display: inline-flex;
@@ -456,8 +521,12 @@ body {
 }
 
 .header-content :global(.sui-connect-button:hover) {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.25);
+  background: linear-gradient(
+    45deg,
+    rgba(89, 77, 63, 0.12) 0%,
+    rgba(89, 77, 63, 0.18) 100%
+  );
+  border-color: rgba(89, 77, 63, 0.25);
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
@@ -477,13 +546,13 @@ body {
 
 /* 连接状态样式 */
 .header-content :global(.sui-connect-button.connected) {
-  background: rgba(24, 144, 255, 0.2);
-  border-color: rgba(24, 144, 255, 0.3);
+  background: rgba(89, 77, 63, 0.15);
+  border-color: rgba(89, 77, 63, 0.25);
 }
 
 .header-content :global(.sui-connect-button.connected:hover) {
-  background: rgba(24, 144, 255, 0.3);
-  border-color: rgba(24, 144, 255, 0.4);
+  background: rgba(89, 77, 63, 0.2);
+  border-color: rgba(89, 77, 63, 0.3);
 }
 
 /* 响应式调整 */
@@ -507,9 +576,25 @@ body {
 .page-title {
   text-align: center;
   margin-bottom: 32px !important;
-  background: linear-gradient(45deg, #1890ff, #36cfc9);
+  font-size: 32px !important;
+  background: linear-gradient(45deg, #594d3f, #8b7355);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  position: relative;
+  padding-bottom: 16px;
+}
+
+/* 添加装饰性下划线 */
+.page-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #594d3f, #8b7355);
+  border-radius: 2px;
 }
 
 .artwork-title {
@@ -544,13 +629,13 @@ body {
 
 .create-form .ant-input:hover,
 .create-form .ant-select-selector:hover {
-  border-color: #40a9ff;
+  border-color: #8b7355;
 }
 
 .create-form .ant-input:focus,
 .create-form .ant-select-selector:focus {
-  border-color: #1890ff;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  border-color: #594d3f;
+  box-shadow: 0 0 0 2px rgba(89, 77, 63, 0.2);
 }
 
 .submit-button {
@@ -558,7 +643,13 @@ body {
   height: 44px;
   border-radius: 22px;
   font-size: 16px;
-  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.2);
+  background: linear-gradient(45deg, #594d3f, #8b7355);
+  border: none;
+  box-shadow: 0 2px 8px rgba(89, 77, 63, 0.2);
+}
+
+.submit-button:hover {
+  background: linear-gradient(45deg, #655847, #97805f);
 }
 
 .cancel-button {
@@ -640,10 +731,14 @@ body {
   padding: 6px 16px;
   height: 36px;
   line-height: 24px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: linear-gradient(
+    45deg,
+    rgba(89, 77, 63, 0.08) 0%,
+    rgba(89, 77, 63, 0.12) 100%
+  );
+  border: 1px solid rgba(89, 77, 63, 0.2);
   border-radius: 18px;
-  color: white;
+  color: #594d3f;
   cursor: pointer;
   transition: all 0.3s;
   display: flex;
@@ -654,17 +749,21 @@ body {
 }
 
 .wallet-button:hover {
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.25);
+  background: linear-gradient(
+    45deg,
+    rgba(89, 77, 63, 0.12) 0%,
+    rgba(89, 77, 63, 0.18) 100%
+  );
+  border-color: rgba(89, 77, 63, 0.25);
   transform: translateY(-1px);
 }
 
 .wallet-dropdown .ant-dropdown-menu {
   padding: 4px;
-  background: #001529;
+  background: #d2c8b9;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(89, 77, 63, 0.1);
+  box-shadow: 0 6px 16px rgba(89, 77, 63, 0.15);
 }
 
 .wallet-address {
@@ -673,39 +772,39 @@ body {
   justify-content: space-between;
   cursor: pointer;
   padding: 8px 12px;
-  color: rgba(255, 255, 255, 0.85);
+  color: #594d3f;
   border-radius: 4px;
   transition: all 0.3s;
 }
 
 .wallet-address:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(89, 77, 63, 0.08);
 }
 
 .wallet-address:hover .anticon {
-  color: #1890ff;
+  color: #8b7355;
 }
 
 .ant-dropdown-menu-item {
   padding: 8px 12px !important;
   border-radius: 4px;
-  color: rgba(255, 255, 255, 0.85) !important;
+  color: #594d3f !important;
 }
 
 .ant-dropdown-menu-item:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(89, 77, 63, 0.08) !important;
 }
 
 .ant-dropdown-menu-item-danger {
-  color: #ff7875 !important;
+  color: #ff4d4f !important;
 }
 
 .ant-dropdown-menu-item-danger:hover {
-  background: rgba(255, 77, 79, 0.16) !important;
+  background: rgba(255, 77, 79, 0.08) !important;
 }
 
 .ant-dropdown-menu-item-divider {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(89, 77, 63, 0.1);
   margin: 4px 0 !important;
 }
 
@@ -737,4 +836,81 @@ body {
 
 .artwork-stats .anticon {
   margin-right: 4px;
+}
+
+/* 添加装饰性下划线 */
+.artwork-header h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #594d3f, #8b7355);
+  border-radius: 2px;
+}
+
+/* 钱包账户信息样式 */
+.wallet-account-info {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  background: rgba(89, 77, 63, 0.05);
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+
+.wallet-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(89, 77, 63, 0.1);
+}
+
+.wallet-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wallet-details {
+  flex: 1;
+}
+
+.wallet-name {
+  font-weight: 500;
+  color: #594d3f;
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.wallet-details .wallet-address {
+  font-size: 12px;
+  color: rgba(89, 77, 63, 0.65);
+  display: flex;
+  align-items: center;
+}
+
+.wallet-details .wallet-address:hover {
+  color: #8b7355;
+  background: transparent;
+}
+
+.wallet-details .wallet-address .anticon {
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+/* 调整下拉菜单其他项的样式 */
+.wallet-dropdown .ant-dropdown-menu-item:not(:first-child) {
+  margin-top: 4px;
+}
+
+.wallet-dropdown .ant-dropdown-menu {
+  padding: 8px;
 }
