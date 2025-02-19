@@ -1,48 +1,37 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, Typography, Tag, Space, Button, message, Avatar, Divider, Modal, Switch, Input, Form, Spin } from 'antd';
-import { HeartOutlined, HeartFilled, UserOutlined, ArrowLeftOutlined, ClockCircleOutlined, SettingOutlined, SwapOutlined, EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
-import { useState,useContext,useEffect } from 'react';
+import { HeartOutlined, HeartFilled, UserOutlined, ArrowLeftOutlined, ClockCircleOutlined, SettingOutlined, SwapOutlined, EyeOutlined } from '@ant-design/icons';
+import { useState, useContext, useEffect } from 'react';
 import { useSignAndExecuteTransaction } from "@mysten/dapp-kit";
-import { Context} from '../layouts/MainLayout';
+import { Context } from '../layouts/MainLayout';
 import { Artwork } from '../lib/constants';
-import { unLikeArtwork,likeArtwork ,queryState,queryObjs} from '../lib/common';
+import { unLikeArtwork, likeArtwork, queryState, queryObjs } from '../lib/common';
 import { motion } from 'framer-motion';
 
 const { Title, Paragraph } = Typography;
 
 const ArtworkDetail = () => {
-
   const { mutate: signAndExecute } = useSignAndExecuteTransaction();
   const { id } = useParams();
   const navigate = useNavigate();
-  const {userLikes, profile} = useContext(Context);
-  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const { userLikes, profile } = useContext(Context);
   const [artwork, setArtwork] = useState<Artwork>();
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [isTransferModalVisible, setIsTransferModalVisible] = useState(false);
   const [newOwnerAddress, setNewOwnerAddress] = useState('');
-  const [isLiked, setIsLiked] = useState(false);
   const [isPublic, setIsPublic] = useState<boolean>(artwork?.show || true);
+
+  const fetchArtworks = async () => {
+    const atAddress = await queryState();
+    const artworks = await queryObjs<Artwork>(atAddress);
+    console.log('artworks list-----> :Promise<T[]>', artworks);
+    setArtwork(() => artworks.find(item => item.id.id === id));
+  };
 
   useEffect(() => {
     fetchArtworks();
   }, []);
 
-  useEffect(() => {
-    if (artwork && userLikes) {
-      setIsLiked(userLikes.likeBalance.has(artwork.id.id));
-    }
-  }, [artwork, userLikes]);
-
-  const fetchArtworks = async () => {
-      const atAddress = await queryState();
-      const artworks  =  await  queryObjs<Artwork>(atAddress);
-      console.log('artworks list-----> :Promise<T[]>',artworks);
-      setArtworks(artworks);
-      setArtwork(()=> artworks.find(item => item.id.id === id));
-  };
-      
-  
   if (!artwork) {
     return (
       <div style={{ 
@@ -84,7 +73,6 @@ const ArtworkDetail = () => {
               message.success('点赞成功');
               userLikes.likeBalance.set(at_address, 10000000);
             }
-            setIsLiked(!hasLiked);
           },
           onError: (error) => {
             console.error('交易失败:', error);
